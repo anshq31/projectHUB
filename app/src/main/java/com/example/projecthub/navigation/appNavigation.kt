@@ -9,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,10 +25,10 @@ import com.example.projecthub.screens.assignmentDetailScreen
 import com.example.projecthub.screens.assignmentsScreen
 import com.example.projecthub.screens.createAssignmentScreen
 import com.example.projecthub.screens.homePage
-import com.example.projecthub.screens.loginPage
+import com.example.projecthub.ui.presentation.authentication.loginPage
 import com.example.projecthub.screens.profileScreen
 import com.example.projecthub.screens.settingsScreen
-import com.example.projecthub.screens.signupPage
+import com.example.projecthub.ui.presentation.authentication.signupPage
 import com.example.projecthub.viewModel.AuthState
 import com.example.projecthub.viewModel.ThemeViewModel
 import com.example.projecthub.viewModel.authViewModel

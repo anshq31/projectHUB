@@ -1,5 +1,6 @@
 package com.example.projecthub.ui.theme
 
+import AppTypography
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -90,7 +91,7 @@ fun ProjectHUBTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = AppTypography,
         content = content
     )
 }

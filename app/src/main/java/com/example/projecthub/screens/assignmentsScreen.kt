@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.example.projecthub.screens
 
@@ -88,6 +87,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.graphics.Brush
 import com.example.projecthub.viewModel.ThemeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -109,9 +109,6 @@ fun assignmentsScreen(
 
     var assignmentToEdit by remember { mutableStateOf<Assignment?>(null) }
 
-
-
-
     LaunchedEffect(Unit) {
         isLoading = true
         Firebase.firestore.collection("assignments")
@@ -131,7 +128,6 @@ fun assignmentsScreen(
             }
     }
 
-
     Scaffold(
         topBar = {
             MainAppBar(title = "Assignments", navController = navController)
@@ -139,33 +135,41 @@ fun assignmentsScreen(
         bottomBar = {
             bottomNavigationBar(navController = navController, currentRoute = "assignments_page")
         },
-
-
         floatingActionButton = {
             CreateAssignmentFAB(onClick = { showDialog = true })
         },
         floatingActionButtonPosition = FabPosition.Center,
-
-        ) { innerPadding ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
             TabRow(
                 selectedTabIndex = selectedTab,
-                containerColor = MaterialTheme.colorScheme.background // Match the screen's background color
-
+                // CHANGED: Using MaterialTheme colors for TabRow
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.primary
             ) {
                 tabs.forEachIndexed{ index, title ->
                     Tab(
-                        text = { Text(title, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) },
+                        text = {
+                            Text(
+                                title,
+                                fontWeight = FontWeight.Bold,
+                                // CHANGED: Using MaterialTheme colors for tab text
+                                color = if (selectedTab == index)
+                                    MaterialTheme.colorScheme.primary
+                                else
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
                         selected = selectedTab == index,
                         onClick = {
                             selectedTab = index
                         }
                     )
                 }
-
             }
+
             when (selectedTab) {
                 0 -> {
                     val myAssignments = if (currentUserId != null) {
@@ -173,8 +177,7 @@ fun assignmentsScreen(
                             it.createdBy == currentUserId
                         }
                     }else emptyList()
-                    AvailableAssignmentsList(myAssignments, isLoading,navController,
-
+                    AvailableAssignmentsList(myAssignments, isLoading, navController,
                         onEditAssignment = { assignment ->
                             assignmentToEdit = assignment
                             showDialog = true
@@ -193,9 +196,9 @@ fun assignmentsScreen(
                     )
                 }
             }
-
         }
     }
+
     if (showDialog) {
         CreateAssignmentDialog(
             showDialog = showDialog,
@@ -216,18 +219,19 @@ fun assignmentsScreen(
             }
         )
     }
-
 }
 
 @Composable
-fun AvailableAssignmentsList(assignments: List<Assignment>,isLoading: Boolean = false,navController: NavHostController,onEditAssignment: (Assignment) -> Unit = {}) {
+fun AvailableAssignmentsList(assignments: List<Assignment>, isLoading: Boolean = false, navController: NavHostController, onEditAssignment: (Assignment) -> Unit = {}) {
     if(isLoading){
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
+            // CHANGED: Using theme primary color for loading indicator
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
         }
     }else if (assignments.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("No assignments available")
+            // CHANGED: Using theme onSurfaceVariant color for empty state text
+            Text("No assignments available", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     } else {
         LazyColumn(
@@ -245,7 +249,6 @@ fun AvailableAssignmentsList(assignments: List<Assignment>,isLoading: Boolean = 
         }
     }
 }
-
 
 @Composable
 fun AssignmentCard(assignment: Assignment, navController: NavHostController, onEditAssignment: (Assignment) -> Unit = {}) {
@@ -364,108 +367,133 @@ fun AssignmentCard(assignment: Assignment, navController: NavHostController, onE
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
             .padding(1.dp)
+            // CHANGED: Using theme secondary color for border
             .background(MaterialTheme.colorScheme.secondary)
     ){
         Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface.copy(
-                alpha = 0.98f
-            )
-        ),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                // CHANGED: Using theme surface color with alpha
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f)
+            ),
+            shape = RoundedCornerShape(8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         ) {
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(16.dp)
             ) {
-                Image(
-                    painter = painterResource(id = posterPhotoId),
-                    contentDescription = "Poster profile photo",
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .clickable {
-                            navController.navigate("user_profile/${assignment.createdBy}")
-                        }
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text = posterName,
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.clickable {
-                        navController.navigate("user_profile/${assignment.createdBy}")
-                    }
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
                 Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = selectedStatus,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    Image(
+                        painter = painterResource(id = posterPhotoId),
+                        contentDescription = "Poster profile photo",
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .clickable {
+                                navController.navigate("user_profile/${assignment.createdBy}")
+                            }
                     )
-                    if(assignment.createdBy == currentUserId) {
-                        Icon(
-                            Icons.Default.ArrowDropDown,
-                            contentDescription = "Dropdown",
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.clickable { expanded = true }
-                        )
-                    }
-                }
 
-                if (assignment.createdBy == currentUserId) {
-                    DropdownMenu(
-                        expanded = expanded,
-                        offset = DpOffset(x = 210.dp, y = 0.dp),
-                        onDismissRequest = { expanded = false }
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = posterName,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Medium,
+                        // CHANGED: Using theme onSurface color for username
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.clickable {
+                            navController.navigate("user_profile/${assignment.createdBy}")
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val statuses = listOf("Active", "In Progress", "Completed")
-                        statuses.forEach { status ->
+                        Text(
+                            text = selectedStatus,
+                            style = MaterialTheme.typography.bodySmall,
+                            // CHANGED: Using theme onSurfaceVariant color for status text
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                        if(assignment.createdBy == currentUserId) {
+                            Icon(
+                                Icons.Default.ArrowDropDown,
+                                contentDescription = "Dropdown",
+                                // CHANGED: Using theme secondary color for dropdown icon
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier.clickable { expanded = true }
+                            )
+                        }
+                    }
 
-                            DropdownMenuItem(
-                                text = { Text(status) },
-                                onClick = {
-                                    expanded = false
-                                    if (status == "Completed") {
-                                        if (assignment.acceptedBidderId != null) {
-                                            showRateDialog = true
-                                            FirebaseFirestore.getInstance().collection("assignments")
-                                                .document(assignment.id)
-                                                .update(mapOf(
-                                                    "status" to status,
-                                                    "bidderRating" to null
-                                                ))
-                                                .addOnSuccessListener {
-                                                    selectedStatus = status
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Status updated to $status",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                                .addOnFailureListener {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Failed to update status",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
+                    if (assignment.createdBy == currentUserId) {
+                        DropdownMenu(
+                            expanded = expanded,
+                            offset = DpOffset(x = 210.dp, y = 0.dp),
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            val statuses = listOf("Active", "In Progress", "Completed")
+                            statuses.forEach { status ->
+
+                                DropdownMenuItem(
+                                    text = { Text(status) },
+                                    onClick = {
+                                        expanded = false
+                                        if (status == "Completed") {
+                                            if (assignment.acceptedBidderId != null) {
+                                                showRateDialog = true
+                                                FirebaseFirestore.getInstance().collection("assignments")
+                                                    .document(assignment.id)
+                                                    .update(mapOf(
+                                                        "status" to status,
+                                                        "bidderRating" to null
+                                                    ))
+                                                    .addOnSuccessListener {
+                                                        selectedStatus = status
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Status updated to $status",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                                    .addOnFailureListener {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Failed to update status",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                            } else {
+                                                FirebaseFirestore.getInstance().collection("assignments")
+                                                    .document(assignment.id)
+                                                    .update("status", status)
+                                                    .addOnSuccessListener {
+                                                        selectedStatus = status
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Status updated to $status",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                                    .addOnFailureListener {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Failed to update status",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                            }
                                         } else {
                                             FirebaseFirestore.getInstance().collection("assignments")
                                                 .document(assignment.id)
@@ -486,128 +514,115 @@ fun AssignmentCard(assignment: Assignment, navController: NavHostController, onE
                                                     ).show()
                                                 }
                                         }
-                                    } else {
-                                        FirebaseFirestore.getInstance().collection("assignments")
-                                            .document(assignment.id)
-                                            .update("status", status)
-                                            .addOnSuccessListener {
-                                                selectedStatus = status
-                                                Toast.makeText(
-                                                    context,
-                                                    "Status updated to $status",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                            .addOnFailureListener {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Failed to update status",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            Divider(
-                modifier = Modifier.padding(vertical = 4.dp),
-                color = MaterialTheme.colorScheme.secondary
-            )
+                Divider(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    // CHANGED: Using theme secondary color for divider
+                    color = MaterialTheme.colorScheme.secondary
+                )
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = assignment.subject,
+                        style = MaterialTheme.typography.bodyMedium,
+                        // CHANGED: Using theme primary color for subject
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    Text(
+                        text = "Posted: ${formatTimestamp(assignment.timestamp)}",
+                        style = MaterialTheme.typography.bodySmall,
+                        // CHANGED: Using theme onSurfaceVariant color for timestamp
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
-                    text = assignment.subject,
+                    text = assignment.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    // CHANGED: Using theme onSurface color for title
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = assignment.description,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    // CHANGED: Using theme onSurfaceVariant color for description
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 12.dp)
                 )
 
-                Text(
-                    text = "Posted: ${formatTimestamp(assignment.timestamp)}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    InfoChip(Icons.Default.Timer, "Deadline: ${assignment.deadline}")
+                    InfoChip(Icons.Default.CurrencyRupee, "₹${assignment.budget}")
+                }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            Text(
-                text = assignment.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = assignment.description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                InfoChip(Icons.Default.Timer, "Deadline: ${assignment.deadline}")
-                InfoChip(Icons.Default.CurrencyRupee, "₹${assignment.budget}")
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                if (isCreatedByCurrentUser) {
-                    OutlinedButton(
-                        onClick = { showBidsListDialog = true },
-                        modifier = Modifier.padding(end = 8.dp)
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                Icons.Default.MonetizationOn,
-                                contentDescription = "View Bids",
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("View Bids")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    if (isCreatedByCurrentUser) {
+                        OutlinedButton(
+                            onClick = { showBidsListDialog = true },
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    Icons.Default.MonetizationOn,
+                                    contentDescription = "View Bids",
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("View Bids")
+                            }
                         }
-                    }
 
-                    OutlinedButton(
-                        onClick = { onEditAssignment(assignment) }
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                Icons.Default.Edit,
-                                contentDescription = "Edit Assignment",
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("Manage")
+                        OutlinedButton(
+                            onClick = { onEditAssignment(assignment) }
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    Icons.Default.Edit,
+                                    contentDescription = "Edit Assignment",
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Manage")
+                            }
                         }
-                    }
-                } else {
-                    Button(
-                        onClick = { showBidDialog = true }
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                if (hasExistingBid) Icons.Default.Edit else Icons.Default.MonetizationOn,
-                                contentDescription = if (hasExistingBid) "Edit Bid" else "Place Bid",
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(if (hasExistingBid) "Edit Bid" else "Place Bid")
+                    } else {
+                        Button(
+                            onClick = { showBidDialog = true }
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    if (hasExistingBid) Icons.Default.Edit else Icons.Default.MonetizationOn,
+                                    contentDescription = if (hasExistingBid) "Edit Bid" else "Place Bid",
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(if (hasExistingBid) "Edit Bid" else "Place Bid")
+                            }
                         }
                     }
                 }
@@ -615,10 +630,9 @@ fun AssignmentCard(assignment: Assignment, navController: NavHostController, onE
         }
     }
 }
-}
 
 @Composable
-fun BidsListDialog(assignmentId: String,navController: NavHostController, onDismiss: () -> Unit) {
+fun BidsListDialog(assignmentId: String, navController: NavHostController, onDismiss: () -> Unit) {
     val context = LocalContext.current
     var bids by remember { mutableStateOf<List<Bid>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
@@ -643,9 +657,11 @@ fun BidsListDialog(assignmentId: String,navController: NavHostController, onDism
     }
 
     AlertDialog(
+        // CHANGED: Using theme surface color for dialog background
         containerColor = MaterialTheme.colorScheme.surface.copy(0.90f),
         onDismissRequest = onDismiss,
-        title = { Text("Bids for Assignment") },
+        // CHANGED: Using theme onSurface color for dialog title
+        title = { Text("Bids for Assignment", color = MaterialTheme.colorScheme.onSurface) },
         text = {
             Box(
                 modifier = Modifier
@@ -654,20 +670,24 @@ fun BidsListDialog(assignmentId: String,navController: NavHostController, onDism
             ) {
                 when {
                     isLoading -> {
+                        // CHANGED: Using theme primary color for loading indicator
                         CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.align(Alignment.Center)
                         )
                     }
                     bids.isEmpty() -> {
+                        // CHANGED: Using theme onSurfaceVariant color for empty state text
                         Text(
                             text = "No bids have been placed on this assignment yet.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.align(Alignment.Center)
                         )
                     }
                     else -> {
                         LazyColumn {
                             items(bids) { bid ->
-                                BidItem(bid = bid, navController= navController,onStatusChanged = {
+                                BidItem(bid = bid, navController = navController, onStatusChanged = {
                                     refreshTrigger++
                                 })
                                 Spacer(modifier = Modifier.height(8.dp))
@@ -690,7 +710,6 @@ fun BidItem(bid: Bid, navController: NavHostController, onStatusChanged: () -> U
     val context = LocalContext.current
     var profilePhotoResId by remember { mutableStateOf(R.drawable.profilephoto1) }
 
-
     LaunchedEffect(bid.bidderId) {
         FirebaseFirestore.getInstance().collection("users")
             .document(bid.bidderId)
@@ -702,10 +721,10 @@ fun BidItem(bid: Bid, navController: NavHostController, onStatusChanged: () -> U
             }
     }
 
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
+            // CHANGED: Using theme surface color with alpha for bid item
             containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f)
         )
     ) {
@@ -718,31 +737,33 @@ fun BidItem(bid: Bid, navController: NavHostController, onStatusChanged: () -> U
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
-                verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Image(
+                        painter = painterResource(id = profilePhotoResId),
+                        contentDescription = "Bidder profile photo",
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clip(CircleShape)
+                            .clickable {
+                                navController.navigate("user_profile/${bid.bidderId}")
+                            }
+                    )
 
-            ) {
-                Image(
-                    painter = painterResource(id = profilePhotoResId),
-                    contentDescription = "Bidder profile photo",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clip(CircleShape)
-                        .clickable {
-                            navController.navigate("user_profile/${bid.bidderId}")
-                        }
-                )
+                    Spacer(modifier = Modifier.width(8.dp))
 
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    modifier = Modifier.clickable { navController.navigate("user_profile/${bid.bidderId}")},
-                    text = bid.bidderName,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                    Text(
+                        modifier = Modifier.clickable { navController.navigate("user_profile/${bid.bidderId}")},
+                        text = bid.bidderName,
+                        style = MaterialTheme.typography.titleMedium,
+                        // CHANGED: Using theme onSurface color for bidder name
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
                 Surface(
+                    // CHANGED: Using theme-appropriate colors for bid status
                     color = when(bid.status) {
                         "accepted" -> MaterialTheme.colorScheme.primaryContainer
                         "rejected" -> MaterialTheme.colorScheme.errorContainer
@@ -753,6 +774,12 @@ fun BidItem(bid: Bid, navController: NavHostController, onStatusChanged: () -> U
                     Text(
                         text = bid.status.capitalize(),
                         style = MaterialTheme.typography.bodySmall,
+                        // CHANGED: Using theme-appropriate colors for bid status text
+                        color = when(bid.status) {
+                            "accepted" -> MaterialTheme.colorScheme.onPrimaryContainer
+                            "rejected" -> MaterialTheme.colorScheme.onErrorContainer
+                            else -> MaterialTheme.colorScheme.onTertiaryContainer
+                        },
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
@@ -763,6 +790,7 @@ fun BidItem(bid: Bid, navController: NavHostController, onStatusChanged: () -> U
             Text(
                 text = "Bid Amount: ₹${bid.bidAmount}",
                 style = MaterialTheme.typography.bodyLarge,
+                // CHANGED: Using theme primary color for bid amount
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
@@ -772,6 +800,7 @@ fun BidItem(bid: Bid, navController: NavHostController, onStatusChanged: () -> U
             Text(
                 text = "Submitted: ${formatTimestamp(bid.timestamp)}",
                 style = MaterialTheme.typography.bodySmall,
+                // CHANGED: Using theme onSurfaceVariant color for timestamp
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
@@ -783,13 +812,14 @@ fun BidItem(bid: Bid, navController: NavHostController, onStatusChanged: () -> U
                 ) {
                     OutlinedButton(
                         onClick = {
-                            updateBidStatus(bid.id, "rejected",context){
+                            updateBidStatus(bid.id, "rejected", context){
                                 onStatusChanged()
                             }
                         },
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
-                        Text("Reject")
+                        // CHANGED: Using theme error color for reject
+                        Text("Reject", color = MaterialTheme.colorScheme.error)
                     }
 
                     Button(
@@ -807,12 +837,11 @@ fun BidItem(bid: Bid, navController: NavHostController, onStatusChanged: () -> U
     }
 }
 
-
-
 @Composable
 fun InfoChip(icon: androidx.compose.ui.graphics.vector.ImageVector, text: String) {
     Surface(
         modifier = Modifier.padding(end = 4.dp),
+        // CHANGED: Using theme surfaceVariant color for chip background
         color = MaterialTheme.colorScheme.surfaceVariant,
         shape = MaterialTheme.shapes.small
     ) {
@@ -824,18 +853,19 @@ fun InfoChip(icon: androidx.compose.ui.graphics.vector.ImageVector, text: String
                 icon,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
+                // CHANGED: Using theme onSurfaceVariant color for icon
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodySmall,
+                // CHANGED: Using theme onSurfaceVariant color for text
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
 }
-
 
 @Composable
 fun UpdateStatusDialog(
@@ -848,6 +878,8 @@ fun UpdateStatusDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        // CHANGED: Using theme surface color for dialog background
+        containerColor = MaterialTheme.colorScheme.surface,
         confirmButton = {
             Button(onClick = { onStatusSelected(selectedStatus) }) {
                 Text("Update")
@@ -855,11 +887,13 @@ fun UpdateStatusDialog(
         },
         dismissButton = {
             OutlinedButton(onClick = onDismiss) {
-                Text("Cancel")
+                // CHANGED: Using theme onSurface color for cancel button
+                Text("Cancel", color = MaterialTheme.colorScheme.onSurface)
             }
         },
         title = {
-            Text("Update Assignment Status")
+            // CHANGED: Using theme onSurface color for dialog title
+            Text("Update Assignment Status", color = MaterialTheme.colorScheme.onSurface)
         },
         text = {
             Column {
@@ -875,7 +909,8 @@ fun UpdateStatusDialog(
                             selected = selectedStatus == status,
                             onClick = { selectedStatus = status }
                         )
-                        Text(text = status)
+                        // CHANGED: Using theme onSurface color for status text
+                        Text(text = status, color = MaterialTheme.colorScheme.onSurface)
                     }
                 }
             }

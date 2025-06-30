@@ -1,4 +1,4 @@
-    package com.example.projecthub.screens
+package com.example.projecthub.screens
 
 import AppBackground7
 import androidx.compose.foundation.background
@@ -28,6 +28,7 @@ import androidx.navigation.NavHostController
 import com.example.projecthub.data.Assignment
 import com.example.projecthub.data.UserProfileCache
 import com.example.projecthub.navigation.routes
+import com.example.projecthub.ui.theme.*
 import com.example.projecthub.usecases.CreateAssignmentFAB
 import com.example.projecthub.usecases.MainAppBar
 import com.example.projecthub.usecases.bottomNavigationBar
@@ -146,7 +147,6 @@ fun homePage(
     }
 
 
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -160,22 +160,27 @@ fun homePage(
                         Text(
                             text = getCurrentDate(),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            // CHANGED: Enhanced color for date text with StandardGold
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.9f)
                         )
                     }
                 },
                 actions = {
                     IconButton(onClick = { /*Notifications  */ }) {
-                        Icon(Icons.Default.Notifications, contentDescription = "Notifications",tint = MaterialTheme.colorScheme.secondary)
+                        // CHANGED: Using StandardGold for notification icon
+                        Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = StandardGold)
                     }
                     IconButton(onClick = {navController.navigate(routes.settingsScreen.route)}) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.secondary)
+                        // CHANGED: Using StandardGold for settings icon
+                        Icon(Icons.Default.Settings, contentDescription = "Settings", tint = StandardGold)
                     }
                 },
                 scrollBehavior = scrollBehavior,
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    // CHANGED: More elegant background with lower alpha and gradient hint
+                    containerColor = DarkBlack.copy(alpha = 0.75f),
+                    // CHANGED: Enhanced title color using StandardGold
+                    titleContentColor = StandardGold
                 )
             )
         },
@@ -186,9 +191,6 @@ fun homePage(
             CreateAssignmentFAB(onClick = { showAssignmentDialog = true })
         },
         floatingActionButtonPosition = FabPosition.Center
-
-
-
     ) { paddingValues ->
         if (showAssignmentDialog) {
             CreateAssignmentDialog(
@@ -236,11 +238,11 @@ fun homePage(
                 }
 
                 item { Spacer(modifier = Modifier.height(16.dp)) }
-
             }
         }
     }
 }
+
 @Composable
 private fun StatsCard(posted: Int, active: Int, completed: Int) {
     Card(
@@ -249,44 +251,61 @@ private fun StatsCard(posted: Int, active: Int, completed: Int) {
             .padding(horizontal = 16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface.copy(0.98f)
+            // CHANGED: Enhanced card background with subtle gold gradient effect
+            containerColor = DarkBlack.copy(0.9f)
         ),
+        // CHANGED: More refined card shape
+        shape = RoundedCornerShape(16.dp)
     ) {
-        Column(
+        // CHANGED: Added subtle gold border
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(1.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .background(DarkBlack)
         ) {
-            Text(
-                text = "Your Statistics",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
-                StatItem(
-                    icon = Icons.Default.Create,
-                    label = "Posted",
-                    value = posted.toString(),
-                    color = MaterialTheme.colorScheme.primary
+                Text(
+                    text = "Your Statistics",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    // CHANGED: Using StandardGold for heading
+                    color = StandardGold
                 )
-                StatItem(
-                    icon = Icons.Default.Assignment,
-                    label = "Working On",
-                    value = active.toString(),
-                    color = Color(0xFFFFA000)
-                )
-                StatItem(
-                    icon = Icons.Default.CheckCircle,
-                    label = "Completed",
-                    value = completed.toString(),
-                    color = Color(0xFF4CAF50)
-                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    StatItem(
+                        icon = Icons.Default.Create,
+                        label = "Posted",
+                        value = posted.toString(),
+                        // CHANGED: Using premium gold color
+                        color = StandardGold
+                    )
+                    StatItem(
+                        icon = Icons.Default.Assignment,
+                        label = "Working On",
+                        value = active.toString(),
+                        // CHANGED: Using amber with better harmony
+                        color = MediumGold
+                    )
+                    StatItem(
+                        icon = Icons.Default.CheckCircle,
+                        label = "Completed",
+                        value = completed.toString(),
+                        // CHANGED: Using SuccessGreen to maintain functional color
+                        color = SuccessGreen
+                    )
+                }
             }
         }
     }
@@ -304,7 +323,8 @@ private fun StatItem(
             modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape)
-                .background(color.copy(alpha = 0.1f)),
+                // CHANGED: More subtle and elegant background effect
+                .background(color.copy(alpha = 0.15f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(imageVector = icon, contentDescription = label, tint = color)
@@ -315,13 +335,16 @@ private fun StatItem(
         Text(
             text = value,
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            // CHANGED: Enhanced color for values
+            color = OffWhite
         )
 
         Text(
             text = label,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            // CHANGED: Softer color for labels
+            color = SoftGray
         )
     }
 }
@@ -345,11 +368,17 @@ private fun MyAssignmentsSection(
             Text(
                 text = "My Assignments",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                // CHANGED: Enhanced heading color
+                color = StandardGold
             )
 
             TextButton(onClick = { navController.navigate(routes.assignmentsScreen.route) }) {
-                Text("See All")
+                Text(
+                    "See All",
+                    // CHANGED: Enhanced action text color
+                    color = LightGold
+                )
             }
         }
 
@@ -357,6 +386,7 @@ private fun MyAssignmentsSection(
 
         Card(
             modifier = Modifier.fillMaxWidth(),
+            // CHANGED: Made card transparent for better integration
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
@@ -369,7 +399,8 @@ private fun MyAssignmentsSection(
                             .height(150.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator()
+                        // CHANGED: Gold colored progress indicator
+                        CircularProgressIndicator(color = StandardGold)
                     }
                 }
                 assignments.isEmpty() -> {
@@ -379,7 +410,11 @@ private fun MyAssignmentsSection(
                             .padding(vertical = 24.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("No active assignments")
+                        // CHANGED: Enhanced empty state text
+                        Text(
+                            "No active assignments",
+                            color = SoftGray
+                        )
                     }
                 }
                 else -> {
@@ -413,11 +448,17 @@ private fun AvailableAssignmentsSection(
             Text(
                 text = "Available Assignments",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                // CHANGED: Enhanced heading color
+                color = StandardGold
             )
 
             TextButton(onClick = { navController.navigate(routes.assignmentsScreen.route) }) {
-                Text("See All")
+                Text(
+                    "See All",
+                    // CHANGED: Enhanced action text color
+                    color = LightGold
+                )
             }
         }
 
@@ -425,8 +466,9 @@ private fun AvailableAssignmentsSection(
 
         Card(
             modifier = Modifier.fillMaxWidth(),
+            // CHANGED: Made card transparent for better integration with the background
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = Color.Transparent
             )
         ) {
             when {
@@ -437,7 +479,8 @@ private fun AvailableAssignmentsSection(
                             .height(150.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator()
+                        // CHANGED: Gold colored progress indicator
+                        CircularProgressIndicator(color = StandardGold)
                     }
                 }
                 assignments.isEmpty() -> {
@@ -447,7 +490,11 @@ private fun AvailableAssignmentsSection(
                             .padding(vertical = 24.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("No available assignments")
+                        // CHANGED: Enhanced empty state text
+                        Text(
+                            "No available assignments",
+                            color = SoftGray
+                        )
                     }
                 }
                 else -> {
@@ -468,93 +515,114 @@ private fun Assignment_Card(assignment: Assignment) {
     Card(
         modifier = Modifier.width(280.dp).padding(horizontal = 3.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f)
+            // CHANGED: Enhanced card background with elegant dark surface
+            containerColor = DarkBlack.copy(0.9f)
         ),
-        shape = RoundedCornerShape(8.dp),
+        // CHANGED: More refined card shape
+        shape = RoundedCornerShape(16.dp),
+        // CHANGED: Subtle elevation for premium look
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         onClick = {  }
     ) {
-        Column(
+        // CHANGED: Added subtle gold border to cards
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-
+                .padding(1.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .background(DarkBlack)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
-                Text(
-                    text = assignment.subject,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Surface(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = MaterialTheme.shapes.small
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Active",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        text = assignment.subject,
+                        style = MaterialTheme.typography.bodyMedium,
+                        // CHANGED: Enhanced subject color
+                        color = StandardGold
                     )
+
+                    Surface(
+                        // CHANGED: More premium status badge
+                        color = RichGold.copy(alpha = 0.2f),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(
+                            text = "Active",
+                            style = MaterialTheme.typography.bodySmall,
+                            // CHANGED: Enhanced status text color
+                            color = LightGold,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = assignment.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
+                Text(
+                    text = assignment.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    // CHANGED: Enhanced title color
+                    color = OffWhite
+                )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = assignment.description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 2,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
+                Text(
+                    text = assignment.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    // CHANGED: More readable description color
+                    color = SilverGray,
+                    maxLines = 2,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                InfoChip(Icons.Default.Timer, "Deadline: ${assignment.deadline}")
-                InfoChip(Icons.Default.CurrencyRupee, "${assignment.budget}")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    InfoChip2(Icons.Default.Timer, "Deadline: ${assignment.deadline}")
+                    InfoChip2(Icons.Default.CurrencyRupee, "${assignment.budget}")
+                }
             }
         }
     }
 }
-//
-//@Composable
-//private fun InfoChip(icon: ImageVector, text: String) {
-//    Surface(
-//        modifier = Modifier.padding(end = 4.dp),
-//        color = MaterialTheme.colorScheme.surfaceVariant,
-//        shape = MaterialTheme.shapes.small
-//    ) {
-//        Row(
-//            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Icon(
-//                icon,
-//                contentDescription = null,
-//                modifier = Modifier.size(16.dp),
-//                tint = MaterialTheme.colorScheme.onSurfaceVariant
-//            )
-//            Spacer(modifier = Modifier.width(4.dp))
-//            Text(
-//                text = text,
-//                style = MaterialTheme.typography.bodySmall,
-//                color = MaterialTheme.colorScheme.onSurfaceVariant
-//            )
-//        }
-//    }
-//}
+
+@Composable
+private fun InfoChip2(icon: ImageVector, text: String) {
+    Surface(
+        modifier = Modifier.padding(end = 4.dp),
+        // CHANGED: Enhanced chip background
+        color = LightGray.copy(alpha = 0.2f),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                // CHANGED: Enhanced icon color
+                tint = LightGold
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodySmall,
+                // CHANGED: Enhanced text color
+                color = SilverGray
+            )
+        }
+    }
+}
