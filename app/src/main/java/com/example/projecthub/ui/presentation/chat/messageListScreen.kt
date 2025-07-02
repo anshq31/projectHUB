@@ -1,32 +1,22 @@
-package com.example.projecthub.screens
+package com.example.projecthub.ui.presentation.chat
 
 import AppBackground7
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.projecthub.R
 import com.example.projecthub.data.chatChannel
 import com.example.projecthub.navigation.routes
-import com.example.projecthub.usecases.MainAppBar
-import com.example.projecthub.usecases.NoChannelsMessage
-import com.example.projecthub.usecases.bottomNavigationBar
-import com.example.projecthub.usecases.bubbleBackground
-import com.example.projecthub.usecases.formatTimeStamp
+import com.example.projecthub.utils.MainAppBar
+import com.example.projecthub.utils.NoChannelsMessage
+import com.example.projecthub.utils.bottomNavigationBar
 import com.example.projecthub.viewModel.ThemeViewModel
 import com.example.projecthub.viewModel.authViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -116,8 +106,9 @@ fun MessageListScreen(
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
             AppBackground7(themeViewModel = themeViewModel)
+
             if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                MessageListComponents.LoadingIndicator()
             } else if (chats.isEmpty()) {
                 NoChannelsMessage(modifier = Modifier.align(Alignment.Center))
             } else {
@@ -125,79 +116,16 @@ fun MessageListScreen(
                     modifier = Modifier.fillMaxSize().padding(16.dp)
                 ) {
                     items(chats) { chatDetails ->
-                        ChatItem(
+                        MessageListComponents.ChatItem(
                             chatDetails = chatDetails,
                             onClick = {
                                 navController.navigate(routes.chatScreen.route.replace("{chatChannelId}", chatDetails.channelId))
                             }
                         )
-                        Divider(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-                        )
+                        MessageListComponents.ChatDivider()
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun ChatItem(
-    chatDetails: ChatWithUserDetails,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-//        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = chatDetails.otherUserPhotoId),
-                contentDescription = "User photo",
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(CircleShape)
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = chatDetails.otherUserName,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = chatDetails.lastMessage.ifEmpty { "No messages yet" },
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Text(
-                text = formatTimeStamp(chatDetails.channel.lastMessageTimestamp.toDate()),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }

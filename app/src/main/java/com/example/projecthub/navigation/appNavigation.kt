@@ -14,33 +14,30 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.projecthub.screens.ChangePasswordScreen
-import com.example.projecthub.screens.ChatScreen
-import com.example.projecthub.screens.EditProfileScreen
-import com.example.projecthub.screens.MessageListScreen
+import com.example.projecthub.ui.presentation.settings.ChangePasswordScreen
+import com.example.projecthub.ui.presentation.chat.ChatScreen
+import com.example.projecthub.ui.presentation.profilesetupscreens.EditProfileScreen
+import com.example.projecthub.ui.presentation.chat.MessageListScreen
 import com.example.projecthub.screens.OnBoardingScreen
 import com.example.projecthub.screens.ProfileSetupScreen
-import com.example.projecthub.screens.userProfileScreen
-import com.example.projecthub.screens.assignmentDetailScreen
-import com.example.projecthub.screens.assignmentsScreen
+import com.example.projecthub.ui.presentation.showprofile.userProfileScreen
+import com.example.projecthub.ui.presentation.assignments.assignmentsScreen
 import com.example.projecthub.screens.createAssignmentScreen
-import com.example.projecthub.screens.homePage
+import com.example.projecthub.ui.presentation.homescreen.homePage
 import com.example.projecthub.ui.presentation.authentication.loginPage
-import com.example.projecthub.screens.profileScreen
-import com.example.projecthub.screens.settingsScreen
+import com.example.projecthub.ui.presentation.showprofile.profileScreen
+import com.example.projecthub.ui.presentation.settings.settingsScreen
 import com.example.projecthub.ui.presentation.authentication.signupPage
 import com.example.projecthub.viewModel.AuthState
 import com.example.projecthub.viewModel.ThemeViewModel
 import com.example.projecthub.viewModel.authViewModel
 
 @Composable
-fun appNavigation(modifier: Modifier,authViewModel: authViewModel,
-                  themeViewModel: ThemeViewModel
-) {
+fun appNavigation(modifier: Modifier, authViewModel: authViewModel, themeViewModel: ThemeViewModel) {
     val navController = rememberNavController()
     val authState by authViewModel.authState.observeAsState()
 
-    NavHost(navController = navController , startDestination = "splash_screen", builder = {
+    NavHost(navController = navController, startDestination = "splash_screen", builder = {
 
         composable("splash_screen") {
             Box(
@@ -50,7 +47,7 @@ fun appNavigation(modifier: Modifier,authViewModel: authViewModel,
                 CircularProgressIndicator()
             }
             LaunchedEffect(authState) {
-                when(authState) {
+                when (authState) {
                     is AuthState.Authenticated ->
                         navController.navigate(routes.homePage.route) {
                             popUpTo("splash_screen") { inclusive = true }
@@ -72,16 +69,16 @@ fun appNavigation(modifier: Modifier,authViewModel: authViewModel,
             }
         }
         composable("login_page") {
-            loginPage(Modifier,navController,authViewModel)
+            loginPage(Modifier, navController, authViewModel)
         }
         composable("signup_page") {
-            signupPage(Modifier,navController,authViewModel)
+            signupPage(Modifier, navController, authViewModel)
         }
         composable(routes.homePage.route) {
             homePage(Modifier, navController, authViewModel)
         }
         composable(routes.profileSetupPage.route) {
-            ProfileSetupScreen(navController,authViewModel)
+            ProfileSetupScreen(navController, authViewModel)
         }
         composable(routes.onBoardingPage.route) {
             OnBoardingScreen(navController, authViewModel)
@@ -90,7 +87,7 @@ fun appNavigation(modifier: Modifier,authViewModel: authViewModel,
             profileScreen(navController, authViewModel)
         }
         composable(routes.settingsScreen.route) {
-            settingsScreen(navController,authViewModel,themeViewModel)
+            settingsScreen(navController, authViewModel, themeViewModel)
         }
         composable(routes.changePasswordScreen.route) {
             ChangePasswordScreen(navController, authViewModel)
@@ -99,20 +96,24 @@ fun appNavigation(modifier: Modifier,authViewModel: authViewModel,
             EditProfileScreen(navController, authViewModel)
         }
         composable(routes.createAssignmentScreen.route) {
-            createAssignmentScreen(navController,authViewModel)
+            createAssignmentScreen(navController, authViewModel)
         }
+
+        // Combined assignments screen - handles both list and detail views
         composable(routes.assignmentsScreen.route) {
-            assignmentsScreen(navController,authViewModel)
+            assignmentsScreen(navController, authViewModel)
         }
+
+        // Assignment detail with parameter
         composable(
             route = "${routes.assignmentDetailScreen.route}/{assignmentId}",
             arguments = listOf(navArgument("assignmentId") { type = NavType.StringType })
         ) { backStackEntry ->
             val assignmentId = backStackEntry.arguments?.getString("assignmentId") ?: ""
-            assignmentDetailScreen(
+            assignmentsScreen(
                 navController = navController,
-                assignmentId = assignmentId,
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                assignmentId = assignmentId
             )
         }
 
@@ -136,9 +137,6 @@ fun appNavigation(modifier: Modifier,authViewModel: authViewModel,
             userProfileScreen(navController = navController, userId = userId)
         }
 
-
-
-        // Add these to appNavigation.kt inside the NavHost builder
         composable(routes.messagesListScreen.route) {
             MessageListScreen(navController, authViewModel)
         }
@@ -150,9 +148,5 @@ fun appNavigation(modifier: Modifier,authViewModel: authViewModel,
             val chatChannelId = backStackEntry.arguments?.getString("chatChannelId") ?: ""
             ChatScreen(navController, chatChannelId)
         }
-
     })
 }
-
-
-

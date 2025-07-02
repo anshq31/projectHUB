@@ -1,35 +1,23 @@
-package com.example.projecthub.screens
+package com.example.projecthub.ui.presentation.showprofile
 
 import AppBackground7
 import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.projecthub.R
 import com.example.projecthub.data.UserProfile
-import com.example.projecthub.usecases.MainAppBar
-import com.example.projecthub.usecases.bottomNavigationBar
-import com.example.projecthub.usecases.bubbleBackground
+import com.example.projecthub.utils.MainAppBar
+import com.example.projecthub.utils.bottomNavigationBar
 import com.example.projecthub.viewModel.ThemeViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -89,7 +77,7 @@ fun userProfileScreen(navController: NavHostController, userId: String) {
             AppBackground7(themeViewModel = themeViewModel)
 
             if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                ShowProfileComponents.LoadingIndicator()
             } else if (userProfile != null) {
                 userProfileContent(userProfile = userProfile!!)
             }
@@ -105,72 +93,52 @@ fun userProfileContent(userProfile: UserProfile) {
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        ProfileHeader(name = userProfile.name, photoId = userProfile.profilePhotoId)
+        ShowProfileComponents.ProfileHeader(name = userProfile.name, photoId = userProfile.profilePhotoId)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp)),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
+        ShowProfileComponents.ProfileCard {
+            ShowProfileComponents.InfoSection(
+                title = "About",
+                icon = Icons.Default.Person,
+                content = userProfile.bio
             )
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp)
-            ) {
-                InfoSection(
-                    title = "About",
-                    icon = Icons.Default.Person,
-                    content = userProfile.bio
-                )
 
-                Divider(
-                    modifier = Modifier.padding(vertical = 16.dp),
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-                )
+            ShowProfileComponents.ProfileDivider()
 
-                InfoSection(
-                    title = "Education",
-                    icon = Icons.Default.School,
-                    content = null
-                )
+            ShowProfileComponents.InfoSection(
+                title = "Education",
+                icon = Icons.Default.School,
+                content = null
+            )
 
-                ProfileDetailRow(
-                    label = "College",
-                    value = userProfile.collegeName,
-                    icon = Icons.Default.AccountBalance
-                )
+            ShowProfileComponents.ProfileDetailRow(
+                label = "College",
+                value = userProfile.collegeName,
+                icon = Icons.Default.AccountBalance
+            )
 
-                ProfileDetailRow(
-                    label = "Semester",
-                    value = userProfile.semester,
-                    icon = Icons.Default.DateRange
-                )
+            ShowProfileComponents.ProfileDetailRow(
+                label = "Semester",
+                value = userProfile.semester,
+                icon = Icons.Default.DateRange
+            )
 
-                ProfileDetailRow(
-                    label = "Location",
-                    value = userProfile.collegeLocation,
-                    icon = Icons.Default.LocationOn
-                )
+            ShowProfileComponents.ProfileDetailRow(
+                label = "Location",
+                value = userProfile.collegeLocation,
+                icon = Icons.Default.LocationOn
+            )
 
-                Divider(
-                    modifier = Modifier.padding(vertical = 16.dp),
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-                )
+            ShowProfileComponents.ProfileDivider()
 
-                InfoSection(
-                    title = "Skills",
-                    icon = Icons.Default.Code,
-                    content = null
-                )
+            ShowProfileComponents.InfoSection(
+                title = "Skills",
+                icon = Icons.Default.Code,
+                content = null
+            )
 
-                SkillsGrid(skills = userProfile.skills)
-            }
+            ShowProfileComponents.SkillsGrid(skills = userProfile.skills)
         }
     }
 }
