@@ -1,6 +1,7 @@
 package com.example.projecthub.ui.presentation.homescreen
 
 import AppBackground7
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
@@ -48,6 +49,7 @@ fun homePage(
     val userId = FirebaseAuth.getInstance().currentUser?.uid
     val db = FirebaseFirestore.getInstance()
     val currentDate = Calendar.getInstance().time
+
     LaunchedEffect(Unit) {
         UserProfileCache.preloadUserProfiles()
     }
@@ -144,8 +146,8 @@ fun homePage(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            AppBackground7(themeViewModel = themeViewModel)
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)

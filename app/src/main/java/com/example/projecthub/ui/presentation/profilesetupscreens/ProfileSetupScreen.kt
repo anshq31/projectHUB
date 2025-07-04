@@ -96,7 +96,6 @@ fun ProfileSetupScreen(navController: NavHostController, authViewModel: authView
     }
 
     ProfileSetupComponents.GradientBackground {
-        AppBackground7(themeViewModel = themeViewModel)
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             ProfileSetupComponents.ProfileCard {

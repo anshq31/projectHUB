@@ -2,6 +2,7 @@ package com.example.projecthub.ui.presentation.profilesetupscreens
 
 import AppBackground7
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -152,8 +153,8 @@ fun EditProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            AppBackground7(themeViewModel = themeViewModel)
 
             if (isLoading) {
                 CircularProgressIndicator(

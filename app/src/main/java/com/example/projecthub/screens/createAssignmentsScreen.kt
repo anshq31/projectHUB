@@ -66,10 +66,6 @@ fun createAssignmentScreen(
         }
     }
 
-    val gradientColors = listOf(
-        MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-        MaterialTheme.colorScheme.background
-    )
 
     var showDialog by remember { mutableStateOf(true) }
     val context = LocalContext.current
@@ -88,10 +84,9 @@ fun createAssignmentScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(brush = Brush.verticalGradient(colors = gradientColors))
+//                .background(MaterialTheme.colorScheme.primary)
                 .padding(paddingValues)
         ) {
-            AppBackground7(themeViewModel = themeViewModel)
 
 
             if (isLoading) {
@@ -192,7 +187,7 @@ fun CreateAssignmentDialog(
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(24.dp),
 
-        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.90f),
+        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.99f),
         tonalElevation = 8.dp,
         title = {
             Column(
@@ -200,12 +195,7 @@ fun CreateAssignmentDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.tertiary
-                            )
-                        ),
+                        MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                     )
                     .padding(vertical = 16.dp)

@@ -26,24 +26,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.projecthub.R
-import com.example.projecthub.ui.theme.SilverGray
 
 object ProfileSetupComponents {
 
     @Composable
     fun GradientBackground(content: @Composable () -> Unit) {
-        val gradientColors = listOf(
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-            MaterialTheme.colorScheme.background
-        )
+
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = gradientColors
-                    )
+                    MaterialTheme.colorScheme.background
                 )
                 .padding(16.dp)
         ) {
@@ -175,7 +169,7 @@ object ProfileSetupComponents {
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                         shape = CircleShape
                     )
-                    .background(SilverGray.copy(alpha = 0.5f))
+//                    .background(.copy(alpha = 0.5f))
                     .clickable { },
                 contentAlignment = Alignment.Center
             ) {
@@ -244,8 +238,7 @@ object ProfileSetupComponents {
                 .padding(bottom = 16.dp)
                 .shadow(4.dp, RoundedCornerShape(12.dp)),
             shape = RoundedCornerShape(12.dp),
-            tonalElevation = 1.dp,
-            color = MaterialTheme.colorScheme.surface
+
         ) {
             OutlinedTextField(
                 value = value,
@@ -257,8 +250,8 @@ object ProfileSetupComponents {
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedContainerColor = MaterialTheme.colorScheme.surface
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 )
             )
         }
@@ -278,8 +271,7 @@ object ProfileSetupComponents {
                 .padding(bottom = 16.dp)
                 .shadow(4.dp, RoundedCornerShape(12.dp)),
             shape = RoundedCornerShape(12.dp),
-            tonalElevation = 1.dp,
-            color = MaterialTheme.colorScheme.surface
+
         ) {
             OutlinedTextField(
                 value = bio,
@@ -305,8 +297,8 @@ object ProfileSetupComponents {
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = if (exceedsLimit) Color.Red else MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                     unfocusedBorderColor = if (exceedsLimit) Color.Red else Color.Transparent,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedContainerColor = MaterialTheme.colorScheme.surface
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer
                 )
             )
         }
@@ -326,8 +318,7 @@ object ProfileSetupComponents {
                 .padding(bottom = 16.dp)
                 .shadow(4.dp, RoundedCornerShape(12.dp)),
             shape = RoundedCornerShape(12.dp),
-            tonalElevation = 1.dp,
-            color = MaterialTheme.colorScheme.surface
+
         ) {
             val semesterOptions = listOf("1", "2", "3", "4", "5", "6", "7", "8")
 
@@ -349,8 +340,8 @@ object ProfileSetupComponents {
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedBorderColor = Color.Transparent,
                         focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                        focusedContainerColor = MaterialTheme.colorScheme.surface
+                        unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                     )
                 )
 
@@ -399,13 +390,12 @@ object ProfileSetupComponents {
                 .padding(bottom = 16.dp)
                 .shadow(4.dp, RoundedCornerShape(12.dp)),
             shape = RoundedCornerShape(12.dp),
-            tonalElevation = 1.dp,
-            color = MaterialTheme.colorScheme.surface
+
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 4.dp),
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
@@ -420,8 +410,8 @@ object ProfileSetupComponents {
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedBorderColor = Color.Transparent,
                         focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                        focusedContainerColor = MaterialTheme.colorScheme.surface
+                        unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                     )
                 )
 
@@ -437,6 +427,7 @@ object ProfileSetupComponents {
         }
     }
 
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     fun SkillsChipRow(
         skills: List<String>,
@@ -492,12 +483,7 @@ object ProfileSetupComponents {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.tertiary
-                            )
-                        )
+                            MaterialTheme.colorScheme.primary
                     ),
                 contentAlignment = Alignment.Center
             ) {

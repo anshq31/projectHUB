@@ -54,7 +54,6 @@ fun settingsScreen(
                 .background(MaterialTheme.colorScheme.background)
         )
         {
-            AppBackground7(themeViewModel)
             Column(
                 modifier = Modifier
                     .fillMaxSize()

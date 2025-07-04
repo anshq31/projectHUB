@@ -65,10 +65,7 @@ fun ChangePasswordScreen(
         }
     }
 
-    val gradientColors = listOf(
-        MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-        MaterialTheme.colorScheme.background
-    )
+
 
     Scaffold(
         topBar = {
@@ -85,11 +82,10 @@ fun ChangePasswordScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(brush = Brush.verticalGradient(colors = gradientColors))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            AppBackground7(themeViewModel = themeViewModel)
 
             Card(
                 modifier = Modifier
@@ -98,7 +94,7 @@ fun ChangePasswordScreen(
                     .shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp)),
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
                 )
             ) {
                 Column(
@@ -113,12 +109,9 @@ fun ChangePasswordScreen(
                             .size(64.dp)
                             .clip(CircleShape)
                             .background(
-                                brush = Brush.radialGradient(
-                                    colors = listOf(
+
                                         MaterialTheme.colorScheme.primary,
-                                        MaterialTheme.colorScheme.primaryContainer
-                                    )
-                                )
+
                             )
                             .padding(8.dp),
                         contentAlignment = Alignment.Center
@@ -139,12 +132,7 @@ fun ChangePasswordScreen(
                         fontWeight = FontWeight.Bold
                     )
 
-                    Text(
-                        text = "Enter your current password and choose a new password",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
-                    )
+Spacer(modifier = Modifier.height(16.dp))
 
                     Surface(
                         modifier = Modifier
@@ -152,8 +140,7 @@ fun ChangePasswordScreen(
                             .padding(bottom = 16.dp)
                             .shadow(4.dp, RoundedCornerShape(12.dp)),
                         shape = RoundedCornerShape(12.dp),
-                        tonalElevation = 1.dp,
-                        color = MaterialTheme.colorScheme.surface
+
                     ) {
                         OutlinedTextField(
                             value = oldPassword,
@@ -177,8 +164,8 @@ fun ChangePasswordScreen(
                             colors = OutlinedTextFieldDefaults.colors(
                                 unfocusedBorderColor = Color.Transparent,
                                 focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                                focusedContainerColor = MaterialTheme.colorScheme.surface
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                             )
                         )
                     }
@@ -189,8 +176,7 @@ fun ChangePasswordScreen(
                             .padding(bottom = 16.dp)
                             .shadow(4.dp, RoundedCornerShape(12.dp)),
                         shape = RoundedCornerShape(12.dp),
-                        tonalElevation = 1.dp,
-                        color = MaterialTheme.colorScheme.surface
+
                     ) {
                         OutlinedTextField(
                             value = newPassword,
@@ -214,8 +200,8 @@ fun ChangePasswordScreen(
                             colors = OutlinedTextFieldDefaults.colors(
                                 unfocusedBorderColor = Color.Transparent,
                                 focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                                focusedContainerColor = MaterialTheme.colorScheme.surface
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                             ),
                             isError = newPassword.isNotEmpty() && !isValidNewPassword
                         )
@@ -238,8 +224,6 @@ fun ChangePasswordScreen(
                             .padding(bottom = 16.dp)
                             .shadow(4.dp, RoundedCornerShape(12.dp)),
                         shape = RoundedCornerShape(12.dp),
-                        tonalElevation = 1.dp,
-                        color = MaterialTheme.colorScheme.surface
                     ) {
                         OutlinedTextField(
                             value = confirmPassword,
@@ -263,8 +247,8 @@ fun ChangePasswordScreen(
                             colors = OutlinedTextFieldDefaults.colors(
                                 unfocusedBorderColor = Color.Transparent,
                                 focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                                focusedContainerColor = MaterialTheme.colorScheme.surface
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                             ),
                             isError = confirmPassword.isNotEmpty() && !passwordsMatch
                         )
@@ -303,19 +287,15 @@ fun ChangePasswordScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(
-                                    brush = Brush.horizontalGradient(
-                                        colors = listOf(
-                                            MaterialTheme.colorScheme.primary,
-                                            MaterialTheme.colorScheme.tertiary
-                                        )
-                                    )
+                                    MaterialTheme.colorScheme.primary
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 "Update Password",
                                 style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }

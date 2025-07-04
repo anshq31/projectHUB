@@ -2,33 +2,34 @@ package com.example.projecthub.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val PureBlack = Color(0xFF000000)
-val DarkestBlack = Color(0xFF030303)
-val DarkerBlack = Color(0xFF050505)
-val DarkBlack = Color(0xFF080808)
-val SoftBlack = Color(0xFF0A0A0A)
+// Light Theme Colors
+object LightColors {
+    val Primary = Color(0xFFFFC107)           // Yellow primary
+    val OnPrimary = Color(0xFF000000)         // Black text on yellow
+    val Background = Color(0xFFFFFFFF)        // Pure white background
+    val OnBackground = Color(0xFF212121)      // Dark gray text
+    val Surface = Color(0xFFF5F5F5)           // Light gray surface
+    val OnSurface = Color(0xFF212121)         // Dark gray text on surface
+    val Secondary = Color(0xFF757575)         // Medium gray secondary
+    val OnSecondary = Color(0xFFFFFFFF)       // White text on secondary
+    val Error = Color(0xFFD32F2F)             // Red error
+    val OnError = Color(0xFFFFFFFF)           // White text on error
+    val Success = Color(0xFF388E3C)           // Green success
+    val OnSuccess = Color(0xFFFFFFFF)         // White text on success
+}
 
-val DarkGold = Color(0xFF513C0B)
-val DeepGold = Color(0xFF6B550F)
-val RichGold = Color(0xFF8B6914)
-val MediumGold = Color(0xFFA67C00)
-val StandardGold = Color(0xFFD4AF37)
-val AccentGold = Color(0xFFAA8523)
-val LightGold = Color(0xFFEDC967)
-
-val DarkGray = Color(0xFF121212)
-val MediumGray = Color(0xFF282828)
-val LightGray = Color(0xFF3E3E3E)
-val SoftGray = Color(0xFF757575)
-val OffWhite = Color(0xFFF5F5F5)
-val SilverGray = Color(0xFFC0C0C0)
-
-val SuccessGreen = Color(0xFF4CAF50)
-val WarningAmber = Color(0xFFFF9800)
-val ErrorRed = Color(0xFFE57373)
-val InfoBlue = Color(0xFF64B5F6)
-
-val FadedYellow = Color(0xFFE8D699)
-val DarkerGray = Color(0xFFB8B8B8)
-val ErrorLight = Color(0xFFFFDAD6)
-val ErrorDark = Color(0xFF410002)
+// Dark Theme Colors
+object DarkColors {
+    val Primary = Color(0xFFFFC107)           // Same yellow primary
+    val OnPrimary = Color(0xFF000000)         // Black text on yellow
+    val Background = Color(0xFF000000)        // Pure black background
+    val OnBackground = Color(0xFFE0E0E0)      // Light gray text
+    val Surface = Color(0xFF121212)           // Dark gray surface
+    val OnSurface = Color(0xFFE0E0E0)         // Light gray text on surface
+    val Secondary = Color(0xFF757575)         // Medium gray secondary
+    val OnSecondary = Color(0xFF000000)       // Black text on secondary
+    val Error = Color(0xFFEF5350)             // Lighter red error for dark mode
+    val OnError = Color(0xFF000000)           // Black text on error
+    val Success = Color(0xFF66BB6A)           // Lighter green success for dark mode
+    val OnSuccess = Color(0xFF000000)         // Black text on success
+}
