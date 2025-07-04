@@ -1,4 +1,4 @@
-package com.example.projecthub.usecases
+package com.example.projecthub.utils
 
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore

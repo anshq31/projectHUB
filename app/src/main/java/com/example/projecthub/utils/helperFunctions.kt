@@ -1,11 +1,9 @@
-package com.example.projecthub.usecases
+package com.example.projecthub.utils
 
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,12 +40,6 @@ import androidx.navigation.NavHostController
 import com.example.projecthub.navigation.routes
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.style.TextAlign
 import com.example.projecthub.data.Assignment
 import com.example.projecthub.data.Bid
@@ -62,10 +54,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlin.io.path.Path
-import kotlin.io.path.moveTo
-import kotlin.random.Random
-import androidx.compose.ui.graphics.Path
 
 @Composable
 fun bottomNavigationBar(navController: NavHostController, currentRoute: String) {

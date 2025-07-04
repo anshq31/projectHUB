@@ -1,7 +1,6 @@
-package com.example.projecthub.screens
+package com.example.projecthub.ui.presentation.settings
 
 import AppBackground7
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,9 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.projecthub.usecases.MainAppBar
-import com.example.projecthub.usecases.bottomNavigationBar
-import com.example.projecthub.usecases.bubbleBackground
+import com.example.projecthub.utils.MainAppBar
+import com.example.projecthub.utils.bottomNavigationBar
 import com.example.projecthub.viewModel.ThemeViewModel
 import com.example.projecthub.viewModel.authViewModel
 
