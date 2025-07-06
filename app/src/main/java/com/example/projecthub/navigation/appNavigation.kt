@@ -23,6 +23,7 @@ import com.example.projecthub.screens.ProfileSetupScreen
 import com.example.projecthub.ui.presentation.showprofile.userProfileScreen
 import com.example.projecthub.ui.presentation.assignments.assignmentsScreen
 import com.example.projecthub.screens.createAssignmentScreen
+import com.example.projecthub.ui.presentation.authentication.EmailVerificationScreen
 import com.example.projecthub.ui.presentation.homescreen.homePage
 import com.example.projecthub.ui.presentation.authentication.loginPage
 import com.example.projecthub.ui.presentation.showprofile.profileScreen
@@ -99,12 +100,10 @@ fun appNavigation(modifier: Modifier, authViewModel: authViewModel, themeViewMod
             createAssignmentScreen(navController, authViewModel)
         }
 
-        // Combined assignments screen - handles both list and detail views
         composable(routes.assignmentsScreen.route) {
             assignmentsScreen(navController, authViewModel)
         }
 
-        // Assignment detail with parameter
         composable(
             route = "${routes.assignmentDetailScreen.route}/{assignmentId}",
             arguments = listOf(navArgument("assignmentId") { type = NavType.StringType })
@@ -148,5 +147,14 @@ fun appNavigation(modifier: Modifier, authViewModel: authViewModel, themeViewMod
             val chatChannelId = backStackEntry.arguments?.getString("chatChannelId") ?: ""
             ChatScreen(navController, chatChannelId)
         }
+
+        composable(routes.emailVerificationScreen.route) {
+            EmailVerificationScreen(
+                navController = navController,
+                authViewModel = authViewModel,
+                onContinueClick = { authViewModel.isEmailVerified() }
+            )
+        }
+
     })
 }

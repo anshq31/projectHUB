@@ -47,8 +47,7 @@ fun signupPage(
                     "Verification email has been sent",
                     Toast.LENGTH_SHORT
                 ).show()
-                navController.popBackStack()
-                navController.navigate("login_page")
+                navController.navigate("email_verification_screen")
             }
             else -> Unit
         }

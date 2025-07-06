@@ -3,6 +3,7 @@ package com.example.projecthub.ui.presentation.assignments
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -66,7 +67,8 @@ object AssignmentComponents {
         isLoading: Boolean = false,
         navController: NavHostController,
         onEditAssignment: (Assignment) -> Unit = {},
-        onAssignmentClick: (Assignment) -> Unit = {}
+        onAssignmentClick: (Assignment) -> Unit = {},
+        onDeleteAssignment: (Assignment) -> Unit = {}
     ) {
         if (isLoading) {
             LoadingIndicator()
@@ -83,7 +85,8 @@ object AssignmentComponents {
                         assignment = assignment,
                         navController = navController,
                         onEditAssignment = onEditAssignment,
-                        onAssignmentClick = onAssignmentClick
+                        onAssignmentClick = onAssignmentClick,
+                        onDeleteAssignment = onDeleteAssignment
                     )
                 }
             }
@@ -95,7 +98,8 @@ object AssignmentComponents {
         assignment: Assignment,
         navController: NavHostController,
         onEditAssignment: (Assignment) -> Unit = {},
-        onAssignmentClick: (Assignment) -> Unit = {}
+        onAssignmentClick: (Assignment) -> Unit = {},
+        onDeleteAssignment: (Assignment) -> Unit = {},
     ) {
         val context = LocalContext.current
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
@@ -218,7 +222,8 @@ object AssignmentComponents {
                                         text = { Text(status) },
                                         onClick = {
                                             expanded = false
-                                            FirebaseFirestore.getInstance().collection("assignments")
+                                            FirebaseFirestore.getInstance()
+                                                .collection("assignments")
                                                 .document(assignment.id)
                                                 .update("status", status)
                                                 .addOnSuccessListener {
@@ -299,6 +304,7 @@ object AssignmentComponents {
                         horizontalArrangement = Arrangement.End
                     ) {
                         if (isCreatedByCurrentUser) {
+
                             OutlinedButton(
                                 onClick = { showBidsListDialog = true },
                                 modifier = Modifier.padding(end = 8.dp)
@@ -327,6 +333,32 @@ object AssignmentComponents {
                                     Text("Manage")
                                 }
                             }
+                            Spacer(modifier = Modifier.width(36.dp))
+
+                            Box(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .border(
+                                        width = 2.dp,
+                                        color = MaterialTheme.colorScheme.error,
+                                        shape = CircleShape
+                                    )
+                                    .align(Alignment.CenterVertically)
+                            ) {
+                                IconButton(
+                                    onClick = { onDeleteAssignment(assignment) },
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Delete Assignment",
+                                        tint = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                }
+                            }
+
                         } else {
                             Button(
                                 onClick = { showBidDialog = true }
@@ -382,11 +414,16 @@ object AssignmentComponents {
                         .document(assignment.id)
                         .update("bidderRating", rating)
                         .addOnSuccessListener {
-                            Toast.makeText(context, "Rating submitted successfully", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Rating submitted successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             showRateDialog = false
                         }
                         .addOnFailureListener {
-                            Toast.makeText(context, "Failed to submit rating", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Failed to submit rating", Toast.LENGTH_SHORT)
+                                .show()
                         }
                 }
             )
@@ -525,7 +562,8 @@ object AssignmentComponents {
                     isLoading = false
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(context, "Error loading bids: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Error loading bids: ${e.message}", Toast.LENGTH_SHORT)
+                        .show()
                     isLoading = false
                 }
         }
@@ -556,6 +594,7 @@ object AssignmentComponents {
                                 modifier = Modifier.align(Alignment.Center)
                             )
                         }
+
                         bids.isEmpty() -> {
                             Text(
                                 text = "No bids have been placed on this assignment yet.",
@@ -563,6 +602,7 @@ object AssignmentComponents {
                                 modifier = Modifier.align(Alignment.Center)
                             )
                         }
+
                         else -> {
                             LazyColumn {
                                 items(bids) { bid ->
@@ -611,7 +651,7 @@ object AssignmentComponents {
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f)
             )
-        ){
+        ) {
             Column(
                 modifier = Modifier.padding(12.dp)
             ) {

@@ -40,6 +40,10 @@ import androidx.navigation.NavHostController
 import com.example.projecthub.navigation.routes
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
 import com.example.projecthub.data.Assignment
 import com.example.projecthub.data.Bid
@@ -458,5 +462,40 @@ fun markAssignmentCompleted(assignmentId: String, onSuccess: () -> Unit = {}, on
         }
         .addOnFailureListener {
             onFailure(it)
+        }
+}
+
+
+
+fun deleteAssignment(
+    context: Context,
+    assignment: Assignment,
+    onComplete: (Boolean) -> Unit = {}
+) {
+    val db = FirebaseFirestore.getInstance()
+    // Delete all bids for this assignment
+    db.collection("bids").whereEqualTo("assignmentId", assignment.id)
+        .get()
+        .addOnSuccessListener { bidsSnapshot ->
+            val batch = db.batch()
+            for (bidDoc in bidsSnapshot.documents) {
+                batch.delete(bidDoc.reference)
+            }
+            // Delete the assignment itself
+            db.collection("assignments").document(assignment.id)
+                .delete()
+                .addOnSuccessListener {
+                    Toast.makeText(context, "Assignment deleted", Toast.LENGTH_SHORT).show()
+                    batch.commit()
+                    onComplete(true)
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Failed to delete assignment: ${e.message}", Toast.LENGTH_SHORT).show()
+                    onComplete(false)
+                }
+        }
+        .addOnFailureListener { e ->
+            Toast.makeText(context, "Failed to delete bids: ${e.message}", Toast.LENGTH_SHORT).show()
+            onComplete(false)
         }
 }

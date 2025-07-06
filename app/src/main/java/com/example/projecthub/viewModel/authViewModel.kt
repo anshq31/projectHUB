@@ -268,6 +268,19 @@ class authViewModel(application: Application): AndroidViewModel(application) {
     fun stopListeningMessages() {
         messageListener?.remove()
     }
+
+    fun isEmailVerified() {
+        val user = auth.currentUser
+        user?.reload()?.addOnCompleteListener {
+            if (user.isEmailVerified) {
+                _authState.value = AuthState.EmailVerified
+            } else {
+                _authState.value = AuthState.Error("Email not verified yet")
+            }
+        }
+    }
+
+
 }
 
 sealed class AuthState{
@@ -278,4 +291,5 @@ sealed class AuthState{
     object Unauthenticated : AuthState()
     object Loading : AuthState()
     data class Error(val message :String) : AuthState()
+    object EmailVerified : AuthState()
 }
