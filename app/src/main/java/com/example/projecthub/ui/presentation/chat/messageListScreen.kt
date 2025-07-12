@@ -62,7 +62,7 @@ fun MessageListScreen(
                     processedChats.add(
                         ChatWithUserDetails(
                             channelId = document.id,
-                            channel = channel,
+                            channel = channel.copy(channelId = document.id),
                             otherUserId = otherUserId,
                             otherUserName = userName,
                             otherUserPhotoId = photoId,
@@ -84,7 +84,7 @@ fun MessageListScreen(
                     processedChats.add(
                         ChatWithUserDetails(
                             channelId = document.id,
-                            channel = channel,
+                            channel = channel.copy(channelId = document.id),
                             otherUserId = otherUserId,
                             otherUserName = userName,
                             otherUserPhotoId = photoId,
