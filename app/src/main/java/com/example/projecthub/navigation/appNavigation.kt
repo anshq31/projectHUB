@@ -34,10 +34,18 @@ import com.example.projecthub.viewModel.ThemeViewModel
 import com.example.projecthub.viewModel.authViewModel
 
 @Composable
-fun appNavigation(modifier: Modifier, authViewModel: authViewModel, themeViewModel: ThemeViewModel) {
+fun appNavigation(modifier: Modifier, authViewModel: authViewModel, themeViewModel: ThemeViewModel,deepLinkRoute: String? = null) {
     val navController = rememberNavController()
     val authState by authViewModel.authState.observeAsState()
 
+    LaunchedEffect(authState, deepLinkRoute) {
+        if (authState is AuthState.Authenticated && !deepLinkRoute.isNullOrEmpty()) {
+            navController.navigate(deepLinkRoute) {
+                popUpTo(routes.homePage.route) { inclusive = false }
+                launchSingleTop = true
+            }
+        }
+    }
     NavHost(navController = navController, startDestination = "splash_screen", builder = {
 
         composable("splash_screen") {

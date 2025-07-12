@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.projecthub.viewModel.AuthState
 import com.example.projecthub.viewModel.authViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun EmailVerificationScreen(
@@ -32,11 +33,16 @@ fun EmailVerificationScreen(
 
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
-
     LaunchedEffect(authState.value) {
         when (authState.value) {
             is AuthState.EmailVerified -> {
                 Toast.makeText(context, "Email verified!", Toast.LENGTH_SHORT).show()
+
+                val user = FirebaseAuth.getInstance().currentUser
+                if (user != null) {
+                    authViewModel.saveFcmTokenToFirestore(user.uid)
+                }
+
                 navController.navigate("onBoarding_page")
             }
             is AuthState.Error -> {
