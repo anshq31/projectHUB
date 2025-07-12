@@ -288,8 +288,8 @@ object HomeScreenComponents {
     @Composable
     private fun AssignmentsRow(assignments: List<Assignment>) {
         androidx.compose.foundation.lazy.LazyRow(
-            contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            contentPadding = PaddingValues(5.dp),
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             items(assignments) { assignment ->
                 AssignmentCard(assignment = assignment)
@@ -305,7 +305,7 @@ object HomeScreenComponents {
                 .width(280.dp)
                 .padding(horizontal = 3.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(0.9f)
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
             ),
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -316,12 +316,12 @@ object HomeScreenComponents {
                     .fillMaxWidth()
                     .padding(1.dp)
                     .clip(RoundedCornerShape(15.dp))
-                    .background(MaterialTheme.colorScheme.surface)
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.95f))
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(20.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),

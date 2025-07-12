@@ -23,6 +23,7 @@ import com.example.projecthub.screens.ProfileSetupScreen
 import com.example.projecthub.ui.presentation.showprofile.userProfileScreen
 import com.example.projecthub.ui.presentation.assignments.assignmentsScreen
 import com.example.projecthub.screens.createAssignmentScreen
+import com.example.projecthub.ui.presentation.authentication.EmailVerificationScreen
 import com.example.projecthub.ui.presentation.homescreen.homePage
 import com.example.projecthub.ui.presentation.authentication.loginPage
 import com.example.projecthub.ui.presentation.showprofile.profileScreen
@@ -33,10 +34,18 @@ import com.example.projecthub.viewModel.ThemeViewModel
 import com.example.projecthub.viewModel.authViewModel
 
 @Composable
-fun appNavigation(modifier: Modifier, authViewModel: authViewModel, themeViewModel: ThemeViewModel) {
+fun appNavigation(modifier: Modifier, authViewModel: authViewModel, themeViewModel: ThemeViewModel,deepLinkRoute: String? = null) {
     val navController = rememberNavController()
     val authState by authViewModel.authState.observeAsState()
 
+    LaunchedEffect(authState, deepLinkRoute) {
+        if (authState is AuthState.Authenticated && !deepLinkRoute.isNullOrEmpty()) {
+            navController.navigate(deepLinkRoute) {
+                popUpTo(routes.homePage.route) { inclusive = false }
+                launchSingleTop = true
+            }
+        }
+    }
     NavHost(navController = navController, startDestination = "splash_screen", builder = {
 
         composable("splash_screen") {
@@ -99,12 +108,10 @@ fun appNavigation(modifier: Modifier, authViewModel: authViewModel, themeViewMod
             createAssignmentScreen(navController, authViewModel)
         }
 
-        // Combined assignments screen - handles both list and detail views
         composable(routes.assignmentsScreen.route) {
             assignmentsScreen(navController, authViewModel)
         }
 
-        // Assignment detail with parameter
         composable(
             route = "${routes.assignmentDetailScreen.route}/{assignmentId}",
             arguments = listOf(navArgument("assignmentId") { type = NavType.StringType })
@@ -148,5 +155,14 @@ fun appNavigation(modifier: Modifier, authViewModel: authViewModel, themeViewMod
             val chatChannelId = backStackEntry.arguments?.getString("chatChannelId") ?: ""
             ChatScreen(navController, chatChannelId)
         }
+
+        composable(routes.emailVerificationScreen.route) {
+            EmailVerificationScreen(
+                navController = navController,
+                authViewModel = authViewModel,
+                onContinueClick = { authViewModel.isEmailVerified() }
+            )
+        }
+
     })
 }

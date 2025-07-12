@@ -9,67 +9,57 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.example.projecthub.viewModel.ThemeViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
+// Simplified Dark Color Scheme - using clean dark colors with yellow primary
 private val DarkColorScheme = darkColorScheme(
-    primary = StandardGold,
-    onPrimary = PureBlack,
-    primaryContainer = RichGold,
-    onPrimaryContainer = OffWhite,
-    secondary = MediumGold,
-    onSecondary = DarkBlack,
-    secondaryContainer = DeepGold.copy(alpha = 0.3f),
-    onSecondaryContainer = OffWhite,
-    tertiary = AccentGold,
-    onTertiary = Color.Black,
-    tertiaryContainer = DeepGold.copy(alpha = 0.2f),
-    onTertiaryContainer = OffWhite,
-    background = DarkestBlack,
-    onBackground = OffWhite,
-    surface = DarkBlack,
-    onSurface = OffWhite,
-    surfaceVariant = SoftBlack.copy(alpha = 0.4f),
-    onSurfaceVariant = LightGray,
-    outline = SoftGray,
-    error = ErrorRed,
-    onError = Color.White,
-    errorContainer = Color(0xFF8B1D2C),
-    onErrorContainer = Color(0xFFFFDAD6)
+    primary = DarkColors.Primary,
+    onPrimary = DarkColors.OnPrimary,
+    background = DarkColors.Background,
+    onBackground = DarkColors.OnBackground,
+    surface = DarkColors.Surface,
+    onSurface = DarkColors.OnSurface,
+    secondary = DarkColors.Secondary,
+    onSecondary = DarkColors.OnSecondary,
+    error = DarkColors.Error,
+    onError = DarkColors.OnError,
+    // Additional Material3 colors for consistency
+    primaryContainer = DarkColors.Primary.copy(alpha = 0.2f),
+    onPrimaryContainer = DarkColors.OnBackground,
+    secondaryContainer = DarkColors.Secondary.copy(alpha = 0.2f),
+    onSecondaryContainer = DarkColors.OnBackground,
+    errorContainer = DarkColors.Error.copy(alpha = 0.2f),
+    onErrorContainer = DarkColors.OnBackground,
+    outline = DarkColors.Secondary,
+    surfaceVariant = DarkColors.Surface.copy(alpha = 0.8f),
+    onSurfaceVariant = DarkColors.OnSurface.copy(alpha = 0.8f)
 )
 
+// Simplified Light Color Scheme - using clean light colors with yellow primary
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF9C7C38),
-    onPrimary = Color.White,
-    primaryContainer = Color(0xFFFFF8E1),
-    onPrimaryContainer = Color(0xFF5D4200),
-    secondary = Color(0xFF795548),
-    onSecondary = Color.White,
-    secondaryContainer = Color(0xFFFFE0B2),
-    onSecondaryContainer = Color(0xFF4E342E),
-    tertiary = Color(0xFF7E57C2),
-    onTertiary = Color.White,
-    tertiaryContainer = Color(0xFFEDE7F6),
-    onTertiaryContainer = Color(0xFF4527A0),
-    background = Color(0xFFFAFAFA),
-    onBackground = Color(0xFF212121),
-    surface = Color(0xFFFFFFFF),
-    onSurface = Color(0xFF212121),
-    surfaceVariant = Color(0xFFF5F5F5),
-    onSurfaceVariant = Color(0xFF616161),
-    outline = Color(0xFFBDBDBD),
-    outlineVariant = Color(0xFF9E9E9E),
-    error = Color(0xFFB00020),
-    onError = Color.White,
-    errorContainer = Color(0xFFFFDAD6),
-    onErrorContainer = Color(0xFF410002),
-    scrim = Color(0x52000000),
-    inverseSurface = Color(0xFF121212),
-    inverseOnSurface = Color(0xFFFFFFFF),
-    surfaceTint = Color(0xFF9C7C38).copy(alpha = 0.1f)
+    primary = LightColors.Primary,
+    onPrimary = LightColors.OnPrimary,
+    background = LightColors.Background,
+    onBackground = LightColors.OnBackground,
+    surface = LightColors.Surface,
+    onSurface = LightColors.OnSurface,
+    secondary = LightColors.Secondary,
+    onSecondary = LightColors.OnSecondary,
+    error = LightColors.Error,
+    onError = LightColors.OnError,
+    // Additional Material3 colors for consistency
+    primaryContainer = LightColors.Primary.copy(alpha = 0.1f),
+    onPrimaryContainer = LightColors.OnBackground,
+    secondaryContainer = LightColors.Secondary.copy(alpha = 0.1f),
+    onSecondaryContainer = LightColors.OnBackground,
+    errorContainer = LightColors.Error.copy(alpha = 0.1f),
+    onErrorContainer = LightColors.OnBackground,
+    outline = LightColors.Secondary,
+    surfaceVariant = LightColors.Surface.copy(alpha = 0.8f),
+    onSurfaceVariant = LightColors.OnSurface.copy(alpha = 0.8f)
 )
 
 @Composable
@@ -80,6 +70,7 @@ fun ProjectHUBTheme(
 ) {
     val isDarkTheme by themeViewModel.isDarkMode.collectAsState()
 
+    // Clean theme selection - minimal and consistent
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current

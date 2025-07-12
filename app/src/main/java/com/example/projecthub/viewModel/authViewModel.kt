@@ -3,6 +3,7 @@ package com.example.projecthub.viewModel
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import com.google.firebase.messaging.FirebaseMessaging
 
 class authViewModel(application: Application): AndroidViewModel(application) {
     private val auth : FirebaseAuth = FirebaseAuth.getInstance()
@@ -84,6 +86,7 @@ class authViewModel(application: Application): AndroidViewModel(application) {
 
                         saveLoginSession(rememberMe)
                         handleAuthenticatedUser(user.uid)
+                        saveFcmTokenToFirestore(user.uid)
                     } else {
                         _authState.value = AuthState.Error("Please verify your email before login")
 //                        auth.signOut()
@@ -114,6 +117,7 @@ class authViewModel(application: Application): AndroidViewModel(application) {
                                 _authState.value = AuthState.Error("Failed to send email verification")
                             }
                         }
+                    saveFcmTokenToFirestore(user?.uid ?: "")
                 }else{
                     _authState.value = AuthState.Error(task.exception?.message?:"Something went wrong")
                 }
@@ -268,6 +272,39 @@ class authViewModel(application: Application): AndroidViewModel(application) {
     fun stopListeningMessages() {
         messageListener?.remove()
     }
+
+
+    fun saveFcmTokenToFirestore(userId: String) {
+        FirebaseMessaging.getInstance().token
+            .addOnSuccessListener { token ->
+                Log.d("FCM_TOKEN", "Retrieved token: $token for user: $userId")
+                val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                db.collection("users").document(userId)
+                    .update("fcmToken", token)
+                    .addOnSuccessListener {
+                        Log.d("FCM_TOKEN", "FCM token saved successfully for user: $userId")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("FCM_TOKEN", "Failed to save FCM token for user: $userId", e)
+                    }
+            }
+            .addOnFailureListener { e ->
+                Log.e("FCM_TOKEN", "Failed to get token for user: $userId", e)
+            }
+    }
+
+    fun isEmailVerified() {
+        val user = auth.currentUser
+        user?.reload()?.addOnCompleteListener {
+            if (user.isEmailVerified) {
+                _authState.value = AuthState.EmailVerified
+            } else {
+                _authState.value = AuthState.Error("Email not verified yet")
+            }
+        }
+    }
+
+
 }
 
 sealed class AuthState{
@@ -278,4 +315,5 @@ sealed class AuthState{
     object Unauthenticated : AuthState()
     object Loading : AuthState()
     data class Error(val message :String) : AuthState()
+    object EmailVerified : AuthState()
 }

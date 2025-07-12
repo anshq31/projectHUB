@@ -127,9 +127,8 @@ fun ChatScreen(
         }
     ) { innerPadding ->
         if (isLoading) {
-            Box(modifier = Modifier.padding(innerPadding)) {
+            Box(modifier = Modifier.padding(innerPadding).background(MaterialTheme.colorScheme.background)) {
                 MessageScreenComponents.LoadingIndicator()
-                ChatWallpaperBackground(themeViewModel = themeViewModel)
             }
         } else {
             Column(
@@ -141,9 +140,8 @@ fun ChatScreen(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface)
+                        .background(MaterialTheme.colorScheme.background)
                 ) {
-                    ChatWallpaperBackground(themeViewModel = themeViewModel)
 
                     if (messages.isEmpty()) {
                         MessageScreenComponents.NoMessagesPlaceholder()

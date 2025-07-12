@@ -84,10 +84,7 @@ fun profileScreen(navController: NavHostController,authViewModel: authViewModel)
 
 @Composable
 fun ProfileScreenContent(navController: NavHostController, userProfile: UserProfile,authViewModel: authViewModel) {
-    val gradientColors = listOf(
-        MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-        MaterialTheme.colorScheme.background
-    )
+
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
@@ -123,11 +120,10 @@ fun ProfileScreenContent(navController: NavHostController, userProfile: UserProf
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(brush = Brush.verticalGradient(colors = gradientColors))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            AppBackground7(themeViewModel = themeViewModel)
             Column(
                 modifier = Modifier
                     .fillMaxSize()

@@ -17,6 +17,7 @@ import com.example.projecthub.screens.RateUserDialog
 import com.example.projecthub.utils.CreateAssignmentFAB
 import com.example.projecthub.utils.MainAppBar
 import com.example.projecthub.utils.bottomNavigationBar
+import com.example.projecthub.utils.deleteAssignment
 import com.example.projecthub.utils.markAssignmentCompleted
 import com.example.projecthub.viewModel.ThemeViewModel
 import com.example.projecthub.viewModel.authViewModel
@@ -48,6 +49,9 @@ fun assignmentsScreen(
     val assignmentsState = remember { mutableStateListOf<Assignment>() }
     val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
     var assignmentToEdit by remember { mutableStateOf<Assignment?>(null) }
+
+    var assignmentToDelete by remember { mutableStateOf<Assignment?>(null) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(assignmentId) {
         if (assignmentId != null && assignmentId.isNotBlank()) {
@@ -130,6 +134,35 @@ fun assignmentsScreen(
         floatingActionButtonPosition = FabPosition.Center,
     ) { innerPadding ->
 
+        if (showDeleteDialog && assignmentToDelete != null) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = { Text("Delete Assignment") },
+                text = { Text("Are you sure you want to delete this assignment? This action cannot be undone.") },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            deleteAssignment(
+                                context = context,
+                                assignment = assignmentToDelete!!,
+                                onComplete = { success ->
+                                    if (success) {
+                                        assignmentsState.removeAll { it.id == assignmentToDelete!!.id }
+                                        Toast.makeText(context, "Assignment deleted", Toast.LENGTH_SHORT).show()
+                                    }
+                                    showDeleteDialog = false
+                                    assignmentToDelete = null
+                                }
+                            )
+                        }
+                    ) { Text("Delete") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDeleteDialog = false }) { Text("Cancel") }
+                }
+            )
+        }
+
         if (isLoading) {
             AssignmentComponents.LoadingIndicator()
         } else if (selectedAssignment != null) {
@@ -206,6 +239,10 @@ fun assignmentsScreen(
                             },
                             onAssignmentClick = { assignment ->
                                 selectedAssignment = assignment
+                            },
+                            onDeleteAssignment = { assignment ->
+                                assignmentToDelete = assignment
+                                showDeleteDialog = true
                             }
                         )
                     }

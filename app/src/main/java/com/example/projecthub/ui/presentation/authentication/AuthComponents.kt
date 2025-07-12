@@ -51,7 +51,7 @@ object AuthComponents {
                     brush = Brush.verticalGradient(colors = gradientColors)
                 )
         ) {
-            AppBackground7(themeViewModel = themeViewModel)
+
         }
     }
 
@@ -281,12 +281,7 @@ object AuthComponents {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.tertiary
-                            )
-                        )
+                        MaterialTheme.colorScheme.primary
                     ),
                 contentAlignment = Alignment.Center
             ) {

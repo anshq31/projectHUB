@@ -225,6 +225,7 @@ object ShowProfileComponents {
         )
     }
 
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     fun SkillsGrid(skills: List<String>) {
         Column(
@@ -232,7 +233,7 @@ object ShowProfileComponents {
                 .fillMaxWidth()
                 .padding(start = 32.dp, top = 8.dp)
         ) {
-            Row(
+            FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -272,12 +273,7 @@ object ShowProfileComponents {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.tertiary
-                            )
-                        )
+                        MaterialTheme.colorScheme.primary,
                     ),
                 contentAlignment = Alignment.Center
             ) {

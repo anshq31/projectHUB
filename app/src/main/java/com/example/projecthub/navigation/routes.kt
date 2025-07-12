@@ -17,4 +17,6 @@ package com.example.projecthub.navigation
 
     object messagesListScreen : routes("messages_list")
     object chatScreen : routes("chat_screen/{chatChannelId}")
+
+    object emailVerificationScreen : routes("email_verification_screen")
 }

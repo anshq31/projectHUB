@@ -40,6 +40,10 @@ import androidx.navigation.NavHostController
 import com.example.projecthub.navigation.routes
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
 import com.example.projecthub.data.Assignment
 import com.example.projecthub.data.Bid
@@ -259,6 +263,7 @@ fun NoChannelsMessage(modifier: Modifier = Modifier) {
         )
     }
 }
+
 fun updateBidStatus(
     bidId: String,
     status: String,
@@ -345,21 +350,27 @@ fun createOrGetChannel(
 
     query1.get().addOnSuccessListener { querySnapshot ->
         if (!querySnapshot.isEmpty) {
-            onChannelCreated(querySnapshot.documents[0].id)
+            val doc = querySnapshot.documents[0]
+            onChannelCreated(doc.id)
         } else {
             query2.get().addOnSuccessListener { querySnapshot2 ->
                 if (!querySnapshot2.isEmpty) {
+                    val doc = querySnapshot2.documents[0]
                     onChannelCreated(querySnapshot2.documents[0].id)
                 } else {
                     val newChannel = chatChannel(
+                        channelId = "",
                         user1Id = currentUserId,
-                        user2Id = otherUserId
+                        user2Id = otherUserId,
+                        lastMessageText = "",
+                        lastMessageTimestamp = Timestamp.now()
                     )
 
                     chatChannelsRef.add(newChannel)
                         .addOnSuccessListener { documentRef ->
-                            onChannelCreated(documentRef.id)
-                        }
+                            chatChannelsRef.document(documentRef.id)
+                                .update("channelId", documentRef.id)
+                            onChannelCreated(documentRef.id)                        }
                 }
             }
         }
@@ -458,5 +469,40 @@ fun markAssignmentCompleted(assignmentId: String, onSuccess: () -> Unit = {}, on
         }
         .addOnFailureListener {
             onFailure(it)
+        }
+}
+
+
+
+fun deleteAssignment(
+    context: Context,
+    assignment: Assignment,
+    onComplete: (Boolean) -> Unit = {}
+) {
+    val db = FirebaseFirestore.getInstance()
+    // Delete all bids for this assignment
+    db.collection("bids").whereEqualTo("assignmentId", assignment.id)
+        .get()
+        .addOnSuccessListener { bidsSnapshot ->
+            val batch = db.batch()
+            for (bidDoc in bidsSnapshot.documents) {
+                batch.delete(bidDoc.reference)
+            }
+            // Delete the assignment itself
+            db.collection("assignments").document(assignment.id)
+                .delete()
+                .addOnSuccessListener {
+                    Toast.makeText(context, "Assignment deleted", Toast.LENGTH_SHORT).show()
+                    batch.commit()
+                    onComplete(true)
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Failed to delete assignment: ${e.message}", Toast.LENGTH_SHORT).show()
+                    onComplete(false)
+                }
+        }
+        .addOnFailureListener { e ->
+            Toast.makeText(context, "Failed to delete bids: ${e.message}", Toast.LENGTH_SHORT).show()
+            onComplete(false)
         }
 }

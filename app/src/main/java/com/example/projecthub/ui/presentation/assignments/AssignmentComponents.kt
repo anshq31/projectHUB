@@ -3,6 +3,7 @@ package com.example.projecthub.ui.presentation.assignments
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -66,7 +67,8 @@ object AssignmentComponents {
         isLoading: Boolean = false,
         navController: NavHostController,
         onEditAssignment: (Assignment) -> Unit = {},
-        onAssignmentClick: (Assignment) -> Unit = {}
+        onAssignmentClick: (Assignment) -> Unit = {},
+        onDeleteAssignment: (Assignment) -> Unit = {}
     ) {
         if (isLoading) {
             LoadingIndicator()
@@ -76,225 +78,16 @@ object AssignmentComponents {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(assignments) { assignment ->
                     AssignmentCard(
                         assignment = assignment,
                         navController = navController,
                         onEditAssignment = onEditAssignment,
-                        onAssignmentClick = onAssignmentClick
+                        onAssignmentClick = onAssignmentClick,
+                        onDeleteAssignment = onDeleteAssignment
                     )
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun AssignmentCard1(
-        assignment: Assignment,
-        navController: NavHostController,
-        onEditAssignment: (Assignment) -> Unit = {},
-        onAssignmentClick: (Assignment) -> Unit = {},
-        currentUserId: String? = null,
-        hasExistingBid: Boolean = false,
-        existingBidData: Bid? = null,
-        onBidClick: () -> Unit = {},
-        onViewBidsClick: () -> Unit = {},
-        onStatusClick: () -> Unit = {},
-        posterName: String = "Unknown User",
-        posterPhotoId: Int = 0,
-        showStatusMenu: Boolean = false,
-        selectedStatus: String = assignment.status,
-        onStatusUpdate: (String) -> Unit = {}
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(10.dp))
-                .padding(1.dp)
-                .background(MaterialTheme.colorScheme.secondary)
-        ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onAssignmentClick(assignment) },
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f)
-                ),
-                shape = RoundedCornerShape(8.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(id = posterPhotoId),
-                            contentDescription = "Poster profile photo",
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clip(CircleShape)
-                                .clickable {
-                                    navController.navigate("user_profile/${assignment.createdBy}")
-                                }
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = posterName,
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.clickable {
-                                navController.navigate("user_profile/${assignment.createdBy}")
-                            }
-                        )
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = selectedStatus,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                            )
-                            if (assignment.createdBy == currentUserId) {
-                                Icon(
-                                    Icons.Default.ArrowDropDown,
-                                    contentDescription = "Dropdown",
-                                    tint = MaterialTheme.colorScheme.secondary,
-                                    modifier = Modifier.clickable(onClick = onStatusClick)
-                                )
-                            }
-                        }
-
-                        if (assignment.createdBy == currentUserId && showStatusMenu) {
-                            DropdownMenu(
-                                expanded = showStatusMenu,
-                                offset = DpOffset(x = 210.dp, y = 0.dp),
-                                onDismissRequest = { onStatusUpdate("") }
-                            ) {
-                                val statuses = listOf("Active", "In Progress", "Completed")
-                                statuses.forEach { status ->
-                                    DropdownMenuItem(
-                                        text = { Text(status) },
-                                        onClick = { onStatusUpdate(status) }
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    Divider(
-                        modifier = Modifier.padding(vertical = 4.dp),
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = assignment.subject,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-
-                        Text(
-                            text = "Posted: ${formatTimestamp(assignment.timestamp)}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = assignment.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        text = assignment.description,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        InfoChip(Icons.Default.Timer, "Deadline: ${assignment.deadline}")
-                        InfoChip(Icons.Default.CurrencyRupee, "₹${assignment.budget}")
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        if (assignment.createdBy == currentUserId) {
-                            OutlinedButton(
-                                onClick = onViewBidsClick,
-                                modifier = Modifier.padding(end = 8.dp)
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        Icons.Default.MonetizationOn,
-                                        contentDescription = "View Bids",
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text("View Bids")
-                                }
-                            }
-
-                            OutlinedButton(
-                                onClick = { onEditAssignment(assignment) }
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        Icons.Default.Edit,
-                                        contentDescription = "Edit Assignment",
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Manage")
-                                }
-                            }
-                        } else {
-                            Button(
-                                onClick = onBidClick
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        if (hasExistingBid) Icons.Default.Edit else Icons.Default.MonetizationOn,
-                                        contentDescription = if (hasExistingBid) "Edit Bid" else "Place Bid",
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(if (hasExistingBid) "Edit Bid" else "Place Bid")
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -305,7 +98,8 @@ object AssignmentComponents {
         assignment: Assignment,
         navController: NavHostController,
         onEditAssignment: (Assignment) -> Unit = {},
-        onAssignmentClick: (Assignment) -> Unit = {}
+        onAssignmentClick: (Assignment) -> Unit = {},
+        onDeleteAssignment: (Assignment) -> Unit = {},
     ) {
         val context = LocalContext.current
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
@@ -350,19 +144,18 @@ object AssignmentComponents {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .padding(1.dp)
-                .background(MaterialTheme.colorScheme.secondary)
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.95f))
         ) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onAssignmentClick(assignment) },
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f)
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
                 ),
-                shape = RoundedCornerShape(8.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                shape = RoundedCornerShape(16.dp),
             ) {
                 Column(
                     modifier = Modifier
@@ -429,7 +222,8 @@ object AssignmentComponents {
                                         text = { Text(status) },
                                         onClick = {
                                             expanded = false
-                                            FirebaseFirestore.getInstance().collection("assignments")
+                                            FirebaseFirestore.getInstance()
+                                                .collection("assignments")
                                                 .document(assignment.id)
                                                 .update("status", status)
                                                 .addOnSuccessListener {
@@ -510,6 +304,7 @@ object AssignmentComponents {
                         horizontalArrangement = Arrangement.End
                     ) {
                         if (isCreatedByCurrentUser) {
+
                             OutlinedButton(
                                 onClick = { showBidsListDialog = true },
                                 modifier = Modifier.padding(end = 8.dp)
@@ -538,6 +333,32 @@ object AssignmentComponents {
                                     Text("Manage")
                                 }
                             }
+                            Spacer(modifier = Modifier.width(36.dp))
+
+                            Box(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .border(
+                                        width = 2.dp,
+                                        color = MaterialTheme.colorScheme.error,
+                                        shape = CircleShape
+                                    )
+                                    .align(Alignment.CenterVertically)
+                            ) {
+                                IconButton(
+                                    onClick = { onDeleteAssignment(assignment) },
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Delete Assignment",
+                                        tint = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                }
+                            }
+
                         } else {
                             Button(
                                 onClick = { showBidDialog = true }
@@ -593,11 +414,16 @@ object AssignmentComponents {
                         .document(assignment.id)
                         .update("bidderRating", rating)
                         .addOnSuccessListener {
-                            Toast.makeText(context, "Rating submitted successfully", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Rating submitted successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             showRateDialog = false
                         }
                         .addOnFailureListener {
-                            Toast.makeText(context, "Failed to submit rating", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Failed to submit rating", Toast.LENGTH_SHORT)
+                                .show()
                         }
                 }
             )
@@ -736,7 +562,8 @@ object AssignmentComponents {
                     isLoading = false
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(context, "Error loading bids: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Error loading bids: ${e.message}", Toast.LENGTH_SHORT)
+                        .show()
                     isLoading = false
                 }
         }
@@ -767,6 +594,7 @@ object AssignmentComponents {
                                 modifier = Modifier.align(Alignment.Center)
                             )
                         }
+
                         bids.isEmpty() -> {
                             Text(
                                 text = "No bids have been placed on this assignment yet.",
@@ -774,6 +602,7 @@ object AssignmentComponents {
                                 modifier = Modifier.align(Alignment.Center)
                             )
                         }
+
                         else -> {
                             LazyColumn {
                                 items(bids) { bid ->
@@ -822,7 +651,7 @@ object AssignmentComponents {
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f)
             )
-        ){
+        ) {
             Column(
                 modifier = Modifier.padding(12.dp)
             ) {

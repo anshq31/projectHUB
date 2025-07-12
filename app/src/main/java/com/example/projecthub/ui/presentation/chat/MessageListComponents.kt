@@ -42,7 +42,7 @@ object MessageListComponents {
                 .clickable(onClick = onClick),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
             ),
         ) {
             Row(

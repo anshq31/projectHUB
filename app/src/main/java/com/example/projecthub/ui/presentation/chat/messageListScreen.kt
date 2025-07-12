@@ -1,6 +1,7 @@
 package com.example.projecthub.ui.presentation.chat
 
 import AppBackground7
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -61,7 +62,7 @@ fun MessageListScreen(
                     processedChats.add(
                         ChatWithUserDetails(
                             channelId = document.id,
-                            channel = channel,
+                            channel = channel.copy(channelId = document.id),
                             otherUserId = otherUserId,
                             otherUserName = userName,
                             otherUserPhotoId = photoId,
@@ -83,7 +84,7 @@ fun MessageListScreen(
                     processedChats.add(
                         ChatWithUserDetails(
                             channelId = document.id,
-                            channel = channel,
+                            channel = channel.copy(channelId = document.id),
                             otherUserId = otherUserId,
                             otherUserName = userName,
                             otherUserPhotoId = photoId,
@@ -104,8 +105,7 @@ fun MessageListScreen(
         topBar = { MainAppBar(title = "Messages", navController = navController) },
         bottomBar = { bottomNavigationBar(navController = navController, currentRoute = "messages_list") }
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-            AppBackground7(themeViewModel = themeViewModel)
+        Box(modifier = Modifier.fillMaxSize().padding(paddingValues).background(MaterialTheme.colorScheme.background)) {
 
             if (isLoading) {
                 MessageListComponents.LoadingIndicator()
