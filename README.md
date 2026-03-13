@@ -17,7 +17,17 @@ notification-driven user engagement
 
 clean modular feature organization
 
+<div align="center">
 
+| Home Screen                             | All Assignments                         | My Assignments                         |
+|:---------------------------------------:|:---------------------------------------:|:--------------------------------------:|
+| ![Home Screen](https://github.com/anshq31/projectHUB/blob/80991a2d131dfbcf028de98b50e1a1d9dd5a6e11/homesScreen.jpeg) | ![All Assignments](https://github.com/anshq31/projectHUB/blob/80991a2d131dfbcf028de98b50e1a1d9dd5a6e11/allAssignmentScreen.jpeg) | ![My Assignments](https://github.com/anshq31/projectHUB/blob/80991a2d131dfbcf028de98b50e1a1d9dd5a6e11/myAssignmentScreen.jpeg) |
+
+| Create Assignment                       | Bidding Screen                          | Chat Screen                            |
+|:----------------------------------------:|:---------------------------------------:|:--------------------------------------:|
+| ![Create Assignment](https://github.com/anshq31/projectHUB/blob/80991a2d131dfbcf028de98b50e1a1d9dd5a6e11/createAssignmentScreen.jpeg) | ![Bidding Screen](https://github.com/anshq31/projectHUB/blob/80991a2d131dfbcf028de98b50e1a1d9dd5a6e11/biddingScreen.jpeg) | ![Chat Screen](https://github.com/anshq31/projectHUB/blob/80991a2d131dfbcf028de98b50e1a1d9dd5a6e11/chatScreen.jpeg) |
+
+</div>
 
 **🌟 Product Vision**
 _________________________________________________________________________________________________________________________________________________________________
