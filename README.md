@@ -48,3 +48,34 @@ maintain transparent communication
 
 The architecture is designed to be extensible toward full gig-economy scalability.
 
+**🛠️ Technology Stack**
+___________________________________________________________________________________________________________________________________________________________________
+
+Language & UI
+
+-Kotlin
+
+-Jetpack Compose
+
+-Material 3
+
+-Concurrency
+
+-Kotlin Coroutines
+
+-Flow-based async streams
+
+-Backend Infrastructure
+
+-Firebase Authentication
+
+-Cloud Firestore
+
+-Firebase Cloud Messaging
+
+-Firebase Cloud Functions
+
+-Build System
+
+-Gradle Kotlin DSL
+
