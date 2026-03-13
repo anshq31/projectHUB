@@ -27,6 +27,10 @@ clean modular feature organization
 |:----------------------------------------:|:---------------------------------------:|:--------------------------------------:|
 | ![Create Assignment](https://github.com/anshq31/projectHUB/blob/80991a2d131dfbcf028de98b50e1a1d9dd5a6e11/createAssignmentScreen.jpeg) | ![Bidding Screen](https://github.com/anshq31/projectHUB/blob/80991a2d131dfbcf028de98b50e1a1d9dd5a6e11/biddingScreen.jpeg) | ![Chat Screen](https://github.com/anshq31/projectHUB/blob/80991a2d131dfbcf028de98b50e1a1d9dd5a6e11/chatScreen.jpeg) |
 
+| Profile Screen | Settings Screen |  |
+|:--------------:|:---------------:|--:|
+| ![Profile Screen](https://github.com/anshq31/projectHUB/blob/085347d88936e3f7d712e9143e08a916b9af0449/profileScreen.jpeg) | ![Settings Screen](https://github.com/anshq31/projectHUB/blob/085347d88936e3f7d712e9143e08a916b9af0449/settingScreen.jpeg) |  |
+
 </div>
 
 **🌟 Product Vision**
